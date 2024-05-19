@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cooking Assistant - Form</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background-color: black;
+      }
+
+      .form {
+        font-size: 20px;
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease-in-out;
+      }
+
+      .form:hover {
+        transform: scale(1.02);
+      }
+
+      .form div {
+        margin-bottom: 15px;
+      }
+
+      .form p {
+        margin: 0 0 5px;
+      }
+
+      .form input {
+        width: calc(100% - 22px);
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        transition: border-color 0.3s;
+      }
+
+      .form input:focus {
+        border-color: rgb(205, 41, 68);
+      }
+
+      .form button {
+        display: block;
+        width: 100%;
+        padding: 15px 20px;
+        background-color: rgb(190, 90, 107);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 26px;
+        transition: background-color 0.3s;
+      }
+
+      .form button:hover {
+        background-color: rgb(205, 41, 68);
+      }
+
+      #conversation {
+        margin-top: 20px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+      }
+      #conversation .user {
+        padding: 10px;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        margin-bottom: 10px;
+      }
+
+      #conversation .ai {
+        padding: 10px;
+        border-radius: 5px;
+        background-color: rgb(190, 90, 107);
+        color: white;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form">
+      <div class="recipe">
+        <p>Is there a specific dish or recipe you want to learn today?</p>
+        <input
+          type="text"
+          name="recipe"
+          id="recipe"
+          placeholder="Poutine, Cheese Pizza, etc"
+        />
+      </div>
+      <div class="ingredients">
+        <p>Ingredients you currently have?</p>
+        <input
+          type="text"
+          name="ingredients"
+          id="ingredients"
+          placeholder="Cheese, Potatoes, Tomatoes, etc"
+        />
+      </div>
+      <div class="restrictions">
+        <p>Are there any dietary restrictions or preferences you follow?</p>
+        <input
+          type="text"
+          name="restrictions"
+          id="restrictions"
+          placeholder="Lactose-Intolerant, Diabetes, etc"
+        />
+      </div>
+      <div class="servings">
+        <p>How many servings do you need the recipe to make?</p>
+        <input type="text" name="servings" id="servings" placeholder="5" />
+      </div>
+      <div class="precautions">
+        <p>
+          Do you want to know the necessary precautions you should take while
+          cooking your recipe?
+        </p>
+        <input
+          type="text"
+          name="precautions"
+          id="precautions"
+          placeholder="Yes"
+        />
+      </div>
+      <br />
+      <div class="startCooking">
+        <button id="startCooking">Start Cooking</button>
+      </div>
+      <div id="conversation" style="display: none"></div>
+    </div>
+    <script src="../static/script.js"></script>
+  </body>
+</html>
