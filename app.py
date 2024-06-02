@@ -5,13 +5,13 @@ from env import apiKey
 app = Flask(__name__)
 
 # Initialize global variables
-chatStr = ""
 openai.api_key = apiKey
 isFirstQuery = True
 
 # Function to generate AI response
 def chat(data):
-    global chatStr, isFirstQuery
+    global isFirstQuery
+    chatStr = ""
     if isFirstQuery:
         recipe = data.get('recipe', 'any dish')
         ingredients = data.get('ingredients', 'any ingredients')
@@ -19,22 +19,35 @@ def chat(data):
         servings = data.get('servings', 'any number of servings')
         precautions = data.get('precautions', 'no precautions')
 
-        chatStr += (f"User: I want to make {recipe} with ingredients {ingredients}, "
-                    f"dietary restrictions {restrictions}, servings {servings}, "
-                    f"and I want {precautions} data.\nAssistant: ")
+        # Check if all fields are at their default values
+        if (recipe == 'any dish' and
+            ingredients == 'any ingredients' and
+            restrictions == 'no restrictions' and
+            servings == 'any number of servings' and
+            precautions == 'no precautions'):
+            chatStr = "Let's start cooking. I hope you'll be able to help me to cook a great meal today. So, firstly start by asking me what I want to cook toduy."
+        else:
+            chatStr = (f"I want to make {recipe} with ingredients {ingredients}, "
+                       f"dietary restrictions {restrictions}, servings {servings}, "
+                       f"and I want {precautions} precautions data.\n")
         
         isFirstQuery = False
     else:
         query = data.get('query', '')
-        chatStr += f"User: {query}\nAssistant: "
+        if "gpt" in query.lower().strip(): 
+            chatStr = f"Give me the recipe {query}\n"
+        else:
+            print("Non-cookgpt query detected. Ignoring.")
+            return ""  # Discard non-cookgpt lines
     
+    print("Sending request to OpenAI:", chatStr)
     response = openai.Completion.create(
         engine="gpt-3.5-turbo-instruct",
         prompt=chatStr,
-        max_tokens=200
+        max_tokens=100
     )
     text = response["choices"][0]["text"]
-    chatStr += f"{text}\n"
+    print("Received response from OpenAI:", text)
     return text
 
 @app.route('/')
@@ -49,11 +62,14 @@ def form():
 def process_chat():
     data = request.get_json()
     query = data.get('query', '').lower()
-    if "stop listening" in query:
+    if "gpt stop" in query:
         response = "cooking session ended"
     else:
         response = chat(data)
+        if not response:
+            response = ""  # Empty response
     return response
+
 
 if __name__ == '__main__':
     app.run(debug=True)
