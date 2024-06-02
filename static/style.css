@@ -38,7 +38,7 @@ body{
 
 
 .hero{
-    height: calc(100%-8px);
+    height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -63,7 +63,7 @@ body{
 
 .separation {
     position: absolute;
-    bottom: 3px;
+    bottom: 0px;
     width: 100vw;
     height: 8px;
     background-color: grey;
