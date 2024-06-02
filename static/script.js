@@ -1,17 +1,17 @@
 let isListening = false;
 let recognition;
-let isFirstQuery = true;
 
 document.addEventListener("DOMContentLoaded", function() {
+    let isFirstClick = true;
+
     document.getElementById("startCooking").addEventListener("click", function() {
         if (!isListening) {
             isListening = true;
-            document.getElementById("conversation").innerHTML = "<p class='user'>Great! Let's start cooking.</p>";
             document.getElementById("conversation").style.display = "block";
             startListening();
         }
 
-        if (isFirstQuery) {
+        if (isFirstClick) {
             const recipe = document.getElementById("recipe").value || "any dish";
             const ingredients = document.getElementById("ingredients").value || "any ingredients";
             const restrictions = document.getElementById("restrictions").value || "no restrictions";
@@ -31,22 +31,35 @@ document.addEventListener("DOMContentLoaded", function() {
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                    const conversationDiv = document.getElementById("conversation");
-                    conversationDiv.innerHTML += "<p class='ai'>Assistant: " + xhr.responseText + "</p>";
-                    speak(xhr.responseText);
-
+                    if (xhr.responseText !== "") {
+                        const conversationDiv = document.getElementById("conversation");
+                        conversationDiv.innerHTML += "<p class='ai'>Assistant: " + xhr.responseText + "</p>";
+                        stopSpeaking();
+                        speak(xhr.responseText);
+                    }
                     if (xhr.responseText.toLowerCase().includes("cooking session ended")) {
                         isListening = false;
+                        document.getElementById("resumeListening").style.display = "inline"; // Show the "Resume Listening" button
                     } else {
                         startListening(); // Restart listening after the response
                     }
                 }
             };
             xhr.send(JSON.stringify(data));
-            isFirstQuery = false; // Set this to false after sending the first query
+            isFirstClick = false; // Set this to false after sending the first query
         }
     });
+
+    // Event listener for the "Resume Listening" button
+    document.getElementById("resumeListening").addEventListener("click", function() {
+        isListening = true;
+        document.getElementById("conversation").innerHTML += "<p class='user'>Resumed listening...</p>";
+        document.getElementById("resumeListening").style.display = "none"; // Hide the "Resume Listening" button
+        startListening();
+    });
 });
+    
+
 
 function initializeRecognition() {
     recognition = new webkitSpeechRecognition();
@@ -58,34 +71,43 @@ function initializeRecognition() {
         console.log("Recognition started");
     };
 
+    
     recognition.onresult = function(event) {
         console.log("Recognition result received");
         var result = event.results[event.resultIndex][0].transcript;
+        console.log("Recognized:", result); 
         var conversationDiv = document.getElementById("conversation");
-        conversationDiv.innerHTML += "<p class='user'>You: " + result + "</p>";
-
-        stopListening();
-
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/chat", true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                conversationDiv.innerHTML += "<p class='ai'>Assistant: " + xhr.responseText + "</p>";
-                speak(xhr.responseText);
-
-                if (xhr.responseText.toLowerCase().includes("cooking session ended")) {
-                    isListening = false;
-                    window.speechSynthesis.cancel();
-                } else {
-                    startListening(); // Restart listening after the response
+        if (/^GPT/i.test(result.trim())) { // Regular expression to match "GPT" at the beginning (case-insensitive)
+            console.log("Recognized GPT query. Sending to server.");
+            conversationDiv.innerHTML += "<p class='user'>You: " + result + "</p>";
+    
+            stopListening();
+    
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/chat", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                    console.log("Received response from server:", xhr.responseText);
+                    conversationDiv.innerHTML += "<p class='ai'>Assistant: " + xhr.responseText + "</p>";
+                    stopSpeaking();
+                    speak(xhr.responseText);
+    
+                    if (xhr.responseText.toLowerCase().includes("cooking session ended")) {
+                        isListening = false;
+                        window.speechSynthesis.cancel(); 
+                        document.getElementById("resumeListening").style.display = "block"; 
+                    } else {
+                        startListening(); // Restart listening after the response
+                    }
                 }
-            }
-        };
-        xhr.send(JSON.stringify({query: result}));
-        isFirstQuery = false; 
+            };
+            console.log("Sending request to server:", result);
+            xhr.send(JSON.stringify({query: result}));
+            isFirstQuery = false; 
+        }
     };
-
+    
     recognition.onend = function() {
         console.log("Recognition ended");
         if (isListening) {
@@ -118,6 +140,11 @@ function stopListening() {
         recognition.stop();
         console.log("Listening stopped");
     }
+}
+
+function stopSpeaking() {
+    window.speechSynthesis.cancel();
+    console.log("Speaking stopped");
 }
 
 function speak(text) {
