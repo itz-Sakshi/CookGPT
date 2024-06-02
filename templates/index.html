@@ -74,6 +74,7 @@
         border-radius: 5px;
         background-color: #f9f9f9;
       }
+
       #conversation .user {
         padding: 10px;
         border-radius: 5px;
@@ -87,6 +88,26 @@
         background-color: rgb(190, 90, 107);
         color: white;
         margin-bottom: 10px;
+      }
+
+      #rules {
+        font-size: 18px;
+        background-color: #eddada;
+        padding: 20px;
+        border-radius: 5px;
+        margin-top: 20px;
+      }
+      #resumeListening{
+        display: none;
+        width: 50%;
+        padding: 15px 20px;
+        background-color: rgb(190, 90, 107);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 26px;
+        transition: background-color 0.3s;
       }
     </style>
   </head>
@@ -140,6 +161,16 @@
         <button id="startCooking">Start Cooking</button>
       </div>
       <div id="conversation" style="display: none"></div>
+      <div><button id="resumeListening">Resume Listening</button></div>
+      <div id="rules">
+        <p>
+          <strong>Chatting Rules:</strong><br /><br>
+          - Always start your command with the word "GPT" to trigger the AI's attention.
+          <br />
+          - To stop chatting, say "GPT stop" and then press "Start Cooking" to
+          resume.
+        </p>
+      </div>
     </div>
     <script src="../static/script.js"></script>
   </body>
