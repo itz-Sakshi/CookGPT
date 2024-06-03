@@ -1,11 +1,11 @@
 from flask import Flask, render_template, request
 import openai
-from env import apiKey
+import os
 
 app = Flask(__name__)
 
 # Initialize global variables
-openai.api_key = apiKey
+openai.api_key = os.environ.get('apiKey')
 isFirstQuery = True
 
 # Function to generate AI response
