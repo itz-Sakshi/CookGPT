@@ -109,6 +109,11 @@
         font-size: 26px;
         transition: background-color 0.3s;
       }
+      .resume{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
     </style>
   </head>
   <body>
@@ -161,13 +166,13 @@
         <button id="startCooking">Start Cooking</button>
       </div>
       <div id="conversation" style="display: none"></div>
-      <div><button id="resumeListening">Resume Listening</button></div>
+      <div class="resume"><button id="resumeListening">Resume Listening</button></div>
       <div id="rules">
         <p>
           <strong>Chatting Rules:</strong><br /><br>
-          - Always start your command with the word "GPT" to trigger the AI's attention.
+          - Always start your command with the word <strong>"AI"</strong> to trigger the AI's attention.
           <br />
-          - To stop chatting, say "GPT stop" and then press "Start Cooking" to
+          - To stop chatting, say <strong>"AI stop"</strong> and then press "Resume Listening" to
           resume.
         </p>
       </div>

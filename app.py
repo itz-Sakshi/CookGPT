@@ -25,7 +25,7 @@ def chat(data):
             restrictions == 'no restrictions' and
             servings == 'any number of servings' and
             precautions == 'no precautions'):
-            chatStr = "Let's start cooking. I hope you'll be able to help me to cook a great meal today. So, firstly start by asking me what I want to cook toduy."
+            chatStr = "I hope you'll be able to provide me with a great recipe to cook a delicious meal today. So, firstly start by asking me what I want to cook today."
         else:
             chatStr = (f"I want to make {recipe} with ingredients {ingredients}, "
                        f"dietary restrictions {restrictions}, servings {servings}, "
@@ -34,7 +34,7 @@ def chat(data):
         isFirstQuery = False
     else:
         query = data.get('query', '')
-        if "gpt" in query.lower().strip(): 
+        if "ai" in query.lower().strip(): 
             chatStr = f"Give me the recipe {query}\n"
         else:
             print("Non-cookgpt query detected. Ignoring.")
@@ -62,7 +62,7 @@ def form():
 def process_chat():
     data = request.get_json()
     query = data.get('query', '').lower()
-    if "gpt stop" in query:
+    if "ai stop" in query:
         response = "cooking session ended"
     else:
         response = chat(data)
