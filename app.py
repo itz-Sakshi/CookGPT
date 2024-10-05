@@ -42,7 +42,7 @@ def chat(data):
     
     print("Sending request to OpenAI:", chatStr)
     response = openai.Completion.create(
-        engine="gpt-3.5-turbo-instruct",
+        engine="gpt-3.5-turbo",
         prompt=chatStr,
         max_tokens=100
     )
