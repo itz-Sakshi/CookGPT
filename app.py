@@ -45,7 +45,7 @@ def chat(data):
 def home():
     return render_template('home.html')
 
-@app.route('/form')
+@app.route('/index')
 def form():
     return render_template('index.html')
 
