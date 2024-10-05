@@ -61,6 +61,7 @@ def form():
 @app.route('/chat', methods=['POST'])
 def process_chat():
     data = request.get_json()
+    print("Received data:", data)  # Debug line
     query = data.get('query', '').lower()
     if "ai stop" in query:
         response = "cooking session ended"
@@ -68,6 +69,7 @@ def process_chat():
         response = chat(data)
         if not response:
             response = ""  # Empty response
+    print("Response to send:", response)  # Debug line
     return response
 
 
