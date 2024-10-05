@@ -28,18 +28,22 @@ def chat(data):
         query = data.get('query', '')
         chatStr += f"User: {query}\nAssistant: "
 
+    # Prepare messages for the chat model
+    messages = [{"role": "user", "content": chatStr}]
+
     try:
-        response = openai.Completion.create(
-            engine="gpt-3.5-turbo-instruct",
-            prompt=chatStr,
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=messages,
             max_tokens=200
         )
-        text = response["choices"][0]["text"]
+        text = response['choices'][0]['message']['content']
         chatStr += f"{text}\n"  # Persisting the assistant's response
         return text.strip()
     except Exception as e:
         print(f"Error calling OpenAI API: {e}")
         return "An error occurred while generating a response."
+
 
 @app.route('/')
 def home():
